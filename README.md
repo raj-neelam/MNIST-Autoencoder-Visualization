@@ -1,8 +1,18 @@
 # Latent Space Explorer
 
-**[ACCESS LIVE APP HERE](REPLACE_WITH_YOUR_LINK)** 
+**[ACCESS LIVE APP HERE](https://raj-neelam.github.io/MNIST-Autoencoder-Visualization/)** 
 
-![Latent Explorer Demo](frontend/image.jpg)
+![Latent Explorer Demo](frontend/images/cover.png)
+
+## Architecture
+![Latent Infographic](frontend/images/latent.png)
+*Visual representation of how the Autoencoder compresses input digits into a 2D latent space and reconstructs them.*
+
+## Performance
+| Original Input | Reconstructed Output |
+| :---: | :---: |
+| ![Original](frontend/images/orignal.png) | ![Reconstructed](frontend/images/reconstructed.png) |
+| *Input Digit* | *Model Output* |
 
 ## What is this?
 The **Latent Space Explorer** is an interactive web application that allows you to explore the "latent space" of a trained Autoencoder model on the MNIST dataset. 
