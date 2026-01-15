@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latent Space Explorer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="light-mode">
+    <div class="container">
+        <header>
+            <h1>Latent Space Explorer</h1>
+            <div class="controls">
+                <div id="status-backend" class="status-chip error">Backend Offline</div>
+                <div id="status-model" class="status-chip error">Model Unloaded</div>
+                <button id="theme-toggle" class="btn">Dark Mode</button>
+            </div>
+        </header>
+
+        <main class="split-screen">
+            <section class="panel left-panel">
+                <h2>Latent Space Input</h2>
+                <div class="canvas-wrapper">
+                    <canvas id="latent-canvas" width="400" height="400"></canvas>
+                    <div class="tooltip" id="coord-tooltip">x: 0.00, y: 0.00</div>
+                </div>
+                <p class="instruction">Click anywhere to generate a digit. Thumbnail will be placed at click.</p>
+            </section>
+
+            <section class="panel right-panel">
+                <h2>Generated Output</h2>
+                <div class="image-wrapper">
+                    <img id="generated-image" src="" alt="Generated Digit" class="placeholder-active">
+                    <div class="placeholder-text">Select a point to generate</div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
