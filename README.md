@@ -40,7 +40,7 @@ By clicking or hovering over a 2D grid, you can generate 28x28 grayscale images 
 ### 1. Clone & Install Backend
 ```bash
 git clone https://github.com/raj-neelam/MNIST-Autoencoder-Visualization
-cd manim_maker/backend
+cd MNIST-Autoencoder-Visualization/backend
 
 # Create virtual environment (optional but recommended)
 python -m venv venv
