@@ -7,9 +7,7 @@ const statusModel = document.getElementById('status-model');
 
 // Configuration
 const CONFIG = {
-    // CHANGE THIS TO YOUR RENDER URL AFTER DEPLOYMENT (e.g., 'https://your-app.onrender.com')
-    // For local development, keep it as 'http://localhost:8000'
-    backendUrl: 'http://localhost:8000',
+    backendUrl: 'https://mnist-digit-autoencoder-visualization.onrender.com',
     latentRange: 3.0,
     canvasSize: 400
 };
