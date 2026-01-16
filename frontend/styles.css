@@ -73,6 +73,15 @@ h1 {
     background-color: var(--chip-error);
 }
 
+.status-chip.warning {
+    background-color: #f39c12; /* Orange for warning/waiting */
+}
+
+.hidden {
+    display: none !important;
+}
+
+
 .btn {
     padding: 8px 16px;
     border: none;

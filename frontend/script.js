@@ -4,6 +4,7 @@ const generatedImage = document.getElementById('generated-image');
 const themeToggle = document.getElementById('theme-toggle');
 const statusBackend = document.getElementById('status-backend');
 const statusModel = document.getElementById('status-model');
+const backendTimer = document.getElementById('backend-timer');
 
 // Configuration
 const CONFIG = {
@@ -16,6 +17,9 @@ const CONFIG = {
 let isDarkMode = false;
 let thumbnails = []; // Store past clicks: {x, y, imageSrc}
 let currentPredictionImg = null;
+let timerInterval = null;
+let countdown = 70;
+let isBackendOnline = false;
 
 // Initialize
 function init() {
@@ -184,14 +188,35 @@ latentCanvas.addEventListener('mouseleave', () => {
     drawGrid(); // Clear crosshair
 });
 
-// Click to Stamp
-latentCanvas.addEventListener('click', (e) => {
-    const { lx, ly } = getLatentCoords(e);
+// Click to Stamp and Update View
+latentCanvas.addEventListener('click', async (e) => {
+    const { lx, ly, cx, cy } = getLatentCoords(e);
 
-    if (currentPredictionImg) {
+    // Fetch fresh image for the specific clicked coordinate
+    try {
+        const response = await fetch(`${CONFIG.backendUrl}/predict`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ x: lx, y: ly })
+        });
+
+        if (!response.ok) throw new Error('Prediction failed');
+
+        const data = await response.json();
+        const imgSrc = data.image;
+
         // Add to thumbnails 
-        thumbnails.push({ x: lx, y: ly, src: currentPredictionImg });
-        drawGrid(e.offsetX, e.offsetY); // Redraw with new thumbnail
+        thumbnails.push({ x: lx, y: ly, src: imgSrc });
+
+        // Update main view (temporarily until mouse moves)
+        generatedImage.src = imgSrc;
+        generatedImage.parentElement.classList.remove('placeholder-active');
+
+        // Redraw grid to include new thumbnail
+        drawGrid(cx, cy);
+
+    } catch (err) {
+        console.error("Click prediction failed:", err);
     }
 });
 
@@ -203,11 +228,43 @@ themeToggle.addEventListener('click', () => {
     drawGrid();
 });
 
+// Timer Logic
+function startBackendTimer() {
+    if (timerInterval || isBackendOnline) return; // Already running or not needed
+
+    backendTimer.classList.remove('hidden');
+    countdown = 70;
+    backendTimer.textContent = `Starting: ${countdown}s`;
+
+    timerInterval = setInterval(() => {
+        countdown--;
+        if (countdown <= 0) {
+            backendTimer.textContent = "Taking longer than usual...";
+            clearInterval(timerInterval);
+            timerInterval = null; // Let it sit there or restart if check fails again?
+        } else {
+            backendTimer.textContent = `Starting: ${countdown}s`;
+        }
+    }, 1000);
+}
+
+function stopBackendTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    backendTimer.classList.add('hidden');
+}
+
 // Status Check
 async function checkBackendStatus() {
     try {
         const response = await fetch(`${CONFIG.backendUrl}/`);
         const data = await response.json();
+
+        // Backend is online
+        isBackendOnline = true;
+        stopBackendTimer();
 
         statusBackend.textContent = 'Backend Online';
         statusBackend.classList.remove('error');
@@ -225,6 +282,8 @@ async function checkBackendStatus() {
 
     } catch (err) {
         console.log("Backend check failed. Is uvicorn running?", err);
+        isBackendOnline = false;
+
         statusBackend.textContent = 'Backend Offline';
         statusBackend.classList.add('error');
         statusBackend.classList.remove('success');
@@ -232,6 +291,9 @@ async function checkBackendStatus() {
         statusModel.textContent = 'Model Unknown';
         statusModel.classList.add('error');
         statusModel.classList.remove('success');
+
+        // Start timer if offline
+        startBackendTimer();
     }
 }
 
